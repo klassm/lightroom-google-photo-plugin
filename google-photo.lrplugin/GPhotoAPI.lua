@@ -61,15 +61,15 @@ local function createOneLineDescription( title, description, separator )
 	if(isempty( title ) and not isempty( description )) then
 		return description
 	end
-	
+
 	if(not isempty( title ) and isempty( description )) then
 		return title
 	end
-	
+
 	if( not isempty( title ) and not isempty( description )) then
 		return title .. separator .. description
 	end
-	
+
 	return nil
 end
 
@@ -233,6 +233,7 @@ function GPhotoAPI.uploadPhoto( propertyTable, params, roundNo )
 	local headers = auth_header(propertyTable)
 	headers[#headers+1] = { field = 'Content-Type', value = 'application/octet-stream'}
 	headers[#headers+1] = { field = 'X-Goog-Upload-File-Name', value = fileName }
+	headers[#headers+1] = { field = 'X-Goog-Upload-Protocol', value = 'raw' }
 
 	local image = LrFileUtils.readFile( filePath )
 	local resultRaw, hdrs
@@ -246,7 +247,7 @@ function GPhotoAPI.uploadPhoto( propertyTable, params, roundNo )
 	end
 	-- Parse GPhoto response for photo ID.
 	local uploadToken = resultRaw
-	
+
 	local postUrlForMeta = 'https://photoslibrary.googleapis.com/v1/mediaItems:batchCreate'
 	local meta = {
 		albumId = params.albumId,
